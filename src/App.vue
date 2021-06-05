@@ -5,7 +5,7 @@
 </template>
 
 <script>
-
+import storage from './storage'
 export default {
   name: 'App',
   components: {
@@ -15,6 +15,9 @@ export default {
     return {
       
     }
+  },
+  mounted() {
+    storage.setItem();
   }
 }
 </script>
