@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted() {
-    storage.setItem();
+    storage.clear('a','user');
   }
 }
 </script>
