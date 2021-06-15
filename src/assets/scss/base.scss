@@ -1,0 +1,11 @@
+.container{
+  width:1226px;
+  margin-right:auto;
+  margin-left:auto;
+}
+a{   //a标签下的img都是100%展示
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}

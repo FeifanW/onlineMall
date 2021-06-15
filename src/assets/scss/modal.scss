@@ -1,0 +1,48 @@
+.modal{
+  @include position(fixed);
+  z-index: 10;
+  transition: all .5s; //控制transition的动画时间
+  .mask{  //遮罩
+    @include position(fixed);
+    background-color: $colorI;
+    opacity: 0.5;
+  }
+  &.slide-enter-active{
+    top: 0; //进去之后top变为0
+  }
+  &.slide-leave-active{  //离开的动画
+    top: -100%;
+  }
+  &.slide-enter{ //动画顺序也有要求，active要在上面
+    top: -100%;  //进去之前看不见
+  }
+  .modal-dialog{  //情态对话
+    @include position(absolute,40%,50%,660px,auto);  //实现弹框居中,宽度660px,高度自适应，但是一般往上一点更舒服
+    background-color: $colorG;
+    transform: translate(-50%,-50%);  //两个参数分别是x轴和y轴，基于自己的位置移动
+    .modal-header{   
+      height: 60px;
+      background-color: $colorJ;
+      padding: 0 25px;
+      line-height: 60px;
+      font-size: $fontI;
+      .icon-close{
+        @include positionImg(absolute,23px,25px,14px,14px,'/imgs/icon-close.png');
+        transition: transform .3s;
+        &:hover{
+          transform: scale(1.5); //移动到关闭按钮上的放大效果,transform单词是改观的意思
+        }
+      }
+    }
+    .modal-body{ //中间内容区域
+      padding: 42px 40px 54px;  //上边42 左右40 下面是54px
+      font-size: 14px;
+    }
+    .modal-footer{
+      height: 82px;  //居中
+      line-height: 82px;
+      text-align: center;
+      background-color: $colorJ;
+    }
+  }
+}
