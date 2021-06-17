@@ -15,7 +15,7 @@
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
           <a href="javascript:;" v-if="username">我的订单</a>
                               <!-- 在下面定义goToCart -->
-          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车</a>
+          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
         </div>
       </div>
     </div>
@@ -147,8 +147,16 @@ export default{
   name:'nav-header',
   data() {
     return {  //不用return的话，会在全局生效，造成变量污染
-      username:'',  //目前只有登录功能，随后会改成vuex动态获取
+              //username从Vuex里获取登录数据
       phoneList:[]
+    }
+  },
+  computed:{  //一开始这个username变量没有，随后一旦获取到了，就会重新帮我们计算一次
+    username() {  //首页刷新之后还存在
+      return this.$store.state.username;
+    },
+    cartCount() {
+      return this.$store.state.cartCount;   //购物车数量也显示出来
     }
   },
   filters:{  //过滤器，用于对金额添加元字。一般涉及到金额的都要用过滤器。

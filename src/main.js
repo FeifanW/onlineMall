@@ -3,6 +3,7 @@ import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
+import store from './store' //index可以省略不写，因为默认是index.js
 import App from './App.vue'  //不加./它会认为是个插件
 //import env from './env'
 
@@ -42,6 +43,7 @@ Vue.use(VueLazyLoad,{  //第二个参数是全局配置
 Vue.config.productionTip = false
 
 new Vue({
+  store, //导入的对象需要放到vue实例中
   router,
   render: h => h(App),
 }).$mount('#app') //挂载到id为app的dom中的意思

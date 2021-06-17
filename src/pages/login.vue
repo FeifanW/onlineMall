@@ -57,6 +57,7 @@ export default{
         //把userId可以先保存在cookie里面，可以安装一下vue-cookie
         this.$cookie.set('userId',res.id,{expires:'1M'}) //设置有效时间,1个月过期
         //为了刷新后也保存登录人的信息，要用到vuex
+        this.$store.dispatch('saveUserName',res.username)  //通过dispatch来派发方法
         //tp-do 保存用户名
         this.$router.push('/index');  //输入点击之后跳转到首页
       })

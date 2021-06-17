@@ -31,13 +31,15 @@ export default {
   },
   methods:{
     getUser(){  //获取用户信息，接口在用户接口文档里面
-      this.axios.get('/user').then(()=>{
+      this.axios.get('/user').then((res)=>{
         // to-do 保存到vuex里面
+        this.$store.dispatch('saveUserName',res.username)
       })
     },
     getCartCount() { //获取购物车的数量
-      this.axios.get('/carts/products/sum').then(()=>{
+      this.axios.get('/carts/products/sum').then((res)=>{
         // to-do 保存到vuex里面
+        this.$store.dispatch('saveCartCount',res) //只写一个res因为返回的数据里只有一个data
       })
     }
   }
