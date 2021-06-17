@@ -26,6 +26,20 @@ export default {
     // this.axios.get('/user/login').then((res)=>{
     //   this.res = res;
     // })
+    this.getUser();
+    this.getCartCount();
+  },
+  methods:{
+    getUser(){  //获取用户信息，接口在用户接口文档里面
+      this.axios.get('/user').then(()=>{
+        // to-do 保存到vuex里面
+      })
+    },
+    getCartCount() { //获取购物车的数量
+      this.axios.get('/carts/products/sum').then(()=>{
+        // to-do 保存到vuex里面
+      })
+    }
   }
 }
 </script>

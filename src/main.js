@@ -2,6 +2,7 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
+import VueCookie from 'vue-cookie'
 import App from './App.vue'  //不加./它会认为是个插件
 //import env from './env'
 
@@ -20,15 +21,21 @@ axios.defaults.timeout = 8000;  //超时处理
 //接口错误拦截
 axios.interceptors.response.use(function(response) {  //对错误进行处理，response是axios这个插件返回给我们的，并不代表返回的值
   let res = response.data;  //response.data才是返回的值
+  let path = location.hash;  //获取路由，如果在首页的话，就不要跳转了
   if(res.status == 0){  //0代表成功
     return res.data;  //这个才是接口返回的值
   }else if(res.status == 10){  //只要不是0，肯定就是错误，比如公司里面定义10是未登录
-    window.location.href = '/#/login'  //跳转到首页
+    if(path != '#/index'){  //不是首页才跳转
+      window.location.href = '/#/login'  //跳转到首页
+    }
   }else {
     alert(res.msg); //弹出错误信息
+    return Promise.reject(res); //报错之后不希望进来
   }
 })
 
+// 使用这个插件
+Vue.use(VueCookie);
 Vue.use(VueLazyLoad,{  //第二个参数是全局配置
   loading:'/imgs/loading-svg/loading-bars.svg'  //就是加载的时候的动画
 })
