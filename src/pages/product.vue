@@ -42,13 +42,13 @@
       <div class="item-video">
         <h2>60帧超慢动作摄影<br/>慢慢回味每一瞬间的精彩</h2>
         <p>后置960帧电影般超慢动作视频，将眨眼间的美妙展现的淋漓尽致！<br/>更能AI 精准分析视频内容，15个场景智能匹配背景音效。</p>
-        <div class="video-bg" @click="showSlide=true"></div>
+        <div class="video-bg" @click="showSlide='slideDown'"></div>
         <div class="video-box" >
           <!-- 这个遮罩就根据这个showSlide来变化 -->
-          <div class="overlay" v-if="showSlide"></div>
+          <div class="overlay" v-if="showSlide=='slideDown'"></div>
           <!-- 当showSlide为true的时候就有这个class,没有的时候就不是这个class -->
-          <div class="video" v-bind:class="{'slide':showSlide}">
-            <span class="icon-close" @click="showSlide=false"></span>
+          <div class="video" v-bind:class="showSlide">
+            <span class="icon-close" @click="showSlide='slideUp'"></span>
             <!-- 添加controls之后，视频就可以播放了，但是视频需要做成一个模态框的样子 muted是静音-->
             <video src="/imgs/product/video.mp4" autoplay muted controls="controls"></video>
           </div>
@@ -69,7 +69,7 @@ export default{
   },
   data() {
     return {
-      showSlide:false, //控制视频动画效果 
+      showSlide:'', //控制视频动画效果 
       product:{}, //商品信息
       swiperOption:{
         autoplay:true,
@@ -188,6 +188,27 @@ export default{
             background-color: #333333;
             opacity: .4;
           }
+          //定义一个动画animation,多看官方文档，效果一直是成对的,单页应用不建议用transition
+          @keyframes slideDown{  //用from to方法，动画特别复杂可以用百分数
+            from{
+              top: -50%;
+              opacity: 0;
+            }
+            to{
+              top: 50%;
+              opacity: 1;
+            }
+          }
+          @keyframes slideUp{  //animation动画
+            from{
+              top: 50%;
+              opacity: 1;
+            }
+            to{
+              top: -50%;
+              opacity: 0;
+            }
+          }
           .video{
             position: fixed;
             top:-50%;
@@ -196,11 +217,13 @@ export default{
             z-index: 10;
             width: 1000px;
             height: 536px;
-            opacity: 0;
-            transition: all .6s;
-            &.slide{
+            opacity: 1;
+            &.slideDown{
+              animation: slideDown .6s linear;
               top: 50%;
-              opacity: 1;
+            }
+            &.slideUp{
+              animation: slideUp .6s linear;
             }
             .icon-close{  //关闭按钮
               position: absolute;
