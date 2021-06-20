@@ -30,14 +30,14 @@ export default {
     this.getCartCount();
   },
   methods:{
-    getUser(){  //获取用户信息，接口在用户接口文档里面
-      this.axios.get('/user').then((res)=>{
+    getUser(){  //获取用户信息，接口在用户接口文档里面,
+      this.axios.get('/user').then((res={})=>{ //添加一个默认值，否则有可能会报错
         // to-do 保存到vuex里面
         this.$store.dispatch('saveUserName',res.username)
       })
     },
     getCartCount() { //获取购物车的数量
-      this.axios.get('/carts/products/sum').then((res)=>{
+      this.axios.get('/carts/products/sum').then((res=0)=>{
         // to-do 保存到vuex里面
         this.$store.dispatch('saveCartCount',res) //只写一个res因为返回的数据里只有一个data
       })

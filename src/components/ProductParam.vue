@@ -5,7 +5,7 @@
     <div class="container">  
       <!-- 一个是标题 -->
       <div class="pro-title">
-        小米8
+        {{title}}
       </div>
       <div class="pro-param">
         <a href="javascript:;">概述</a><span>|</span>
@@ -20,6 +20,9 @@
 <script>
 export default {
   name:'nav-bar', //导出一个名称
+  props:{
+    title:String
+  },
   data() {
     return {
       isFixed:false,  //判断是否需要定位，高度高于152的时候，变成需要定位

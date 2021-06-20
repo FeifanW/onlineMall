@@ -3,7 +3,8 @@
       <product-param :title="product.name">
         <template v-slot:buy>  
           <!-- 子组件里的插槽 -->
-          <button class="btn" @click="buy">立即购买</button>
+          <!-- 点击buy的时候就跳转过去 -->
+          <button class="btn" @click="buy">立即购买</button>  
         </template>
       </product-param>
       <div class="content">
@@ -43,12 +44,12 @@
         <h2>60帧超慢动作摄影<br/>慢慢回味每一瞬间的精彩</h2>
         <p>后置960帧电影般超慢动作视频，将眨眼间的美妙展现的淋漓尽致！<br/>更能AI 精准分析视频内容，15个场景智能匹配背景音效。</p>
         <div class="video-bg" @click="showSlide='slideDown'"></div>
-        <div class="video-box" >
+        <div class="video-box" v-if="showSlide">
           <!-- 这个遮罩就根据这个showSlide来变化 -->
-          <div class="overlay" v-if="showSlide=='slideDown'"></div>
+          <div class="overlay"></div>
           <!-- 当showSlide为true的时候就有这个class,没有的时候就不是这个class -->
           <div class="video" v-bind:class="showSlide">
-            <span class="icon-close" @click="showSlide='slideUp'"></span>
+            <span class="icon-close" @click="closeVideo"></span>
             <!-- 添加controls之后，视频就可以播放了，但是视频需要做成一个模态框的样子 muted是静音-->
             <video src="/imgs/product/video.mp4" autoplay muted controls="controls"></video>
           </div>
@@ -84,7 +85,7 @@ export default{
     }
   },
   mounted() {  //渲染完成的时候加载
-    this.getProductInfo();
+    this.getProductInfo();  //初始化
   },
   methods:{
     getProductInfo() {  //axios获取数据
@@ -93,8 +94,14 @@ export default{
         this.product = res;
       })
     },
+    closeVideo(){
+      this.showSlide = 'slideup';
+      setTimeout(()=>{
+        this.showSlide = '';
+      },500)
+    },
     buy() {
-      let id = this.$route.params.id;
+      let id = this.$route.params.id; //获取参数
       this.$router.push(`/detail/${id}`);
     }
   }
