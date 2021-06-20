@@ -52,6 +52,7 @@ export default {
     border-top: 1px solid $colorH;
     background-color: $colorG;  //加一个背景颜色，原来是透明的
     box-shadow: 0 5px 5px $colorE;  //加一个阴影
+    z-index: 10;
     &.is_fixed{  //滚动然后吸附到顶部
       position: fixed;  //在父容器上加绝对定位之后，父容器的宽度就和内容区宽度一样了
       top: 0;

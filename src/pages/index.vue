@@ -236,17 +236,18 @@
           this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]  //slice不会改变原数组，splice会改变原数组
         })
       },
-      addCart(){
-        this.showModal = true;
-        //后台接口文档里面，添加购物车是POST方法,地址是/carts
-        // this.axios.post('/carts',{  //第一个参数是地址，第二个参数是要传递的参数
-        //   productId: id,
-        //   selected: true
-        // }).then(()=>{  //链式调用
+      addCart(id){
 
-        // }).catch(()=>{
-        //   this.showModal = true;
-        // })
+        // 后台接口文档里面，添加购物车是POST方法,地址是/carts
+        this.axios.post('/carts',{  //第一个参数是地址，第二个参数是要传递的参数
+          productId: id,
+          selected: true
+        }).then((res)=>{  //链式调用
+          this.showModal = true;
+          this.$store.dispatch('saveCartCount',res.cartTotalQuantity);  //派发出去
+        }).catch(()=>{
+          this.showModal = true;
+        })
       },
       goToCart(){
         this.$router.push('/cart')  //点击购物车之后实现路由跳转

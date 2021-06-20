@@ -9,3 +9,16 @@ a{   //a标签下的img都是100%展示
     height: 100%;
   }
 }
+.fl{
+  float: left;
+}
+.fr{
+  float: right;
+}
+.clearfix:before,.clearfix:after{  //可以用来清除浮动,两者共有的元素
+  content: ' ';
+  display: table;
+}
+.clearfix:after{  //利用伪元素清除浮动,不清除浮动的话会塌陷
+  clear:both;
+}

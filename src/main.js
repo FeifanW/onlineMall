@@ -29,6 +29,7 @@ axios.interceptors.response.use(function(response) {  //对错误进行处理，
     if(path != '#/index'){  //不是首页才跳转
       window.location.href = '/#/login'  //跳转到首页
     }
+    return Promise.reject(res);
   }else {
     alert(res.msg); //弹出错误信息
     return Promise.reject(res); //报错之后不希望进来
