@@ -234,34 +234,6 @@ export default{
         position: relative;  //让手机和logo对齐
         height:112px;  //顶部菜单栏高度，宽度在base.scss里面定义好了
         @include flex();
-        .header-logo{
-          display: inline-block;
-          // 可视化的区域是55px，实际上有两张图片，左右移动
-          width: 55px;
-          height: 55px;
-          // 两张图片可以用伪类的方法实现
-          background-color:#FF6600;  //因为logo字体是白色的，所以要加背景色
-          border-radius: 19px;
-          a{
-            display: inline-block;
-            width: 110px; //相框，两张图片的宽度类似轮播的那种
-            height: 55px;
-            &::before{ //scss里面伪类之前要加&
-              content:'';  //content是必加，不加就没有占位，效果就消失了
-              @include bgImg(55px,55px,'/imgs/mi-logo.png',55px);
-              transition: margin .2s;  //添加从logo移开的动画效果
-              margin-right: 0px;  //小房子图标居中
-            }
-            &::after{ //scss里面伪类之前要加&
-              content:'';
-              @include bgImg(55px,55px,'/imgs/mi-home.png',55px);
-            }
-            &:hover::before{  //移动到上面的时候实现logo切换
-              margin-left:-55px;
-              transition:margin .2s ;  //可以指定某个属性过渡,这样设置移出的时候没有动画，所以要在上面加
-            }
-          }
-        }
         .header-menu{
           display: inline-block;
           width: 643px;  //这样元素就能顶头了
