@@ -25,7 +25,8 @@
                 <img v-lazy="item.productMainImage" alt="">
                 <span>{{item.productName + ' , ' + item.productSubtitle}}</span>
               </div>
-              <div class="item-price">{{item.productPrice}}</div>
+              <!-- 价格一般不放在前端，有可能会有安全性问题 -->
+              <div class="item-price">{{item.productPrice}}</div> 
               <div class="item-num">
                 <div class="num-box">
                   <a href="javascript:;" @click="updateCart(item,'-')">-</a>
@@ -55,12 +56,12 @@
   </div>
 </template>
 <script>
-  import OrderHeader from './../components/OrderHeader'
-  import ServiceBar from './../components/ServiceBar'
-  import NavFooter from './../components/NavFooter'
+  import OrderHeader from './../components/OrderHeader'  //顶部导航栏
+  import ServiceBar from './../components/ServiceBar'  //底部服务栏
+  import NavFooter from './../components/NavFooter'   //页脚
   export default{
     name:'index',
-    components:{
+    components:{  //引用的组件要注册一下
       OrderHeader,
       ServiceBar,
       NavFooter
@@ -74,11 +75,11 @@
       }
     },
     mounted(){
-      this.getCartList();
+      this.getCartList();  //页面加载的时候获取数据
     },
     methods:{
       // 获取购物车列表
-      getCartList(){
+      getCartList(){     //根据接口文档
         this.axios.get('/carts').then((res)=>{
           this.renderData(res);
         })
