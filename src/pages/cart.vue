@@ -9,7 +9,9 @@
       <div class="container">
         <div class="cart-box">
           <ul class="cart-item-head">
+            <!-- span就是那个全选按钮，用列表模拟横向栏 -->
             <li class="col-1"><span class="checkbox" v-bind:class="{'checked':allChecked}" @click="toggleAll"></span>全选</li>
+            <!-- id上不同的数字代表不同的flex:grow值，因为用的是flex布局 -->
             <li class="col-3">商品名称</li>
             <li class="col-1">单价</li>
             <li class="col-2">数量</li>
@@ -153,7 +155,7 @@
         background-color:#fff;
         font-size:14px;
         color:#999999;
-        text-align:center;
+        text-align:center;  //文字居中
         .checkbox{
           display: inline-block;
           width: 22px;
@@ -163,16 +165,16 @@
           margin-right: 17px;
           cursor:pointer;
           &.checked{
-            background:url('/imgs/icon-gou.png') #FF6600 no-repeat center;
+            background:url('/imgs/icon-gou.png') #FF6600 no-repeat center;  //图片是一个透明的对号，所以要添加背景颜色
             background-size:16px 12px;
             border:none;
           }
         }
         .cart-item-head{
           display:flex;
-          height: 79px;
+          height: 79px;  //表头的文字居中
           line-height: 79px;
-          .col-1{
+          .col-1{   //按照flex:grow的比例分配距离
             flex:1;
           }
           .col-2{
@@ -182,22 +184,22 @@
             flex:3;
           }
         }
-        .cart-item-list{
+        .cart-item-list{   //就是下面是否选中的状态
           .cart-item{
             display:flex;
-            align-items:center;
+            align-items:center;  //文字垂直居中
             height:125px;
-            border-top:1px solid #E5E5E5;
+            border-top:1px solid #E5E5E5;   //上面一条分界线
             font-size:16px;
-            .item-check{
+            .item-check{  //前面的按钮
               flex:1;
             }
-            .item-name{
+            .item-name{  //图片和名称
               flex:3;
               font-size: 18px;
               color: #333333;
               display: flex;
-              align-items: center;
+              align-items: center;  
               img{
                 width:80px;
                 height:80px;
@@ -220,57 +222,57 @@
                 line-height:40px;
                 border:1px solid #E5E5E5;
                 font-size:14px;
-                a{
+                a{   //按钮里面的 + 和 - 都可以用a链接
                   display:inline-block;
                   width:50px;
                   color:#333333;
                 }
-                span{
+                span{   //中间的数字用span
                   display:inline-block;
                   width:50px;
                   color:#333333;
                 }
               }
             }
-            .item-total{
+            .item-total{  //小计，某一种产品总价格
               flex:1;
               color:#FF6600;
             }
-            .item-del{
+            .item-del{  //可以实现删除操作，删除按钮，用成背景图片
               flex:1;
               width:14px;
               height:12px;
-              background:url('/imgs/icon-close.png') no-repeat center;
+              background:url('/imgs/icon-close.png') no-repeat center;  //no-repeat是为了防止平铺
               background-size:contain;
               cursor:pointer;
             }
           }
         }
       }
-      .order-wrap{
+      .order-wrap{   //下面的总计一栏
         font-size:14px;
         color: #666666;
         margin-top: 20px;
-        height: 50px;
+        height: 50px;  //居中
         line-height: 50px;
-        .cart-tip{
+        .cart-tip{  //左边一栏
           margin-left: 29px;
-          a{
+          a{   //继续购物
             color: #666666;
             margin-right:37px;
           }
-          span{
+          span{  //选中数字
             color:#FF6600;
             margin:0 5px;
           }
         }
-        .total{
+        .total{  //右侧一栏
           font-size:14px;
           color:#FF6600;
-          span{
+          span{  //总金额
             font-size:24px;
           }
-          a{
+          a{   //右侧去结算按钮
             width:202px;
             height:50px;
             line-height:50px;
