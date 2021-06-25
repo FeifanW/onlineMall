@@ -24,6 +24,7 @@
             <li class="cart-item" v-for="(item,index) in list" v-bind:key="index">
               <div class="item-check">
                 <!-- 购物车每一项是否被选中，可以使用动态绑定，也就是后台返回的productSelected是true的时候就是选中了，添加这个class -->
+                <!-- 单选也要绑定一个事件click -->
                 <span class="checkbox" v-bind:class="{'checked':item.productSelected}"  @click="updateCart(item)"></span>
               </div>
               <div class="item-name">
@@ -36,6 +37,7 @@
               <div class="item-price">{{item.productPrice}}</div> 
               <div class="item-num">
                 <div class="num-box">
+                  //更新列表
                   <a href="javascript:;" @click="updateCart(item,'-')">-</a>
                   <!-- 选中的商品的数量 -->
                   <span>{{item.quantity}}</span>
@@ -44,6 +46,7 @@
               </div>
               <!-- 总价格，是后端计算，不是在前端计算的，保证安全性 -->
               <div class="item-total">{{item.productTotalPrice}}</div>
+              <!-- 删除按钮绑定事件 -->
               <div class="item-del" @click="delProduct(item)"></div>
             </li>
           </ul>
@@ -97,9 +100,10 @@
         })
       },
       // 更新购物车数量和购物车单选状态
+      // item指当前操作信息，type是指当前操作类型
       updateCart(item,type){
-        let quantity = item.quantity,
-            selected = item.productSelected;
+        let quantity = item.quantity,  //获取商品数量
+            selected = item.productSelected;  //控制商品是否选中
         if(type == '-'){
           if(quantity == 1){
             this.$message.warning('商品至少保留一件');
@@ -113,17 +117,18 @@
           }
           ++quantity;
         }else{
-          selected = !item.productSelected;
+          selected = !item.productSelected;  //取反
         }
+        //更新商品数量
         this.axios.put(`/carts/${item.productId}`,{
           quantity,
           selected
         }).then((res)=>{
-          this.renderData(res);
+          this.renderData(res);  //返回商品的购物列表
         })
       },
       //所以的数据都是从后台拉取，而不是在本地计算
-      // 删除购物车商品
+      // 删除购物车商品，查看一下接口文档，这里是单个删除，不是批量删除
       delProduct(item){
         this.axios.delete(`/carts/${item.productId}`).then((res)=>{
           this.$message.success('删除成功');
