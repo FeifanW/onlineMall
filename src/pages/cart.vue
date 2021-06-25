@@ -10,7 +10,7 @@
         <div class="cart-box">
           <ul class="cart-item-head">
             <!-- span就是那个全选按钮，用列表模拟横向栏 -->
-            <!-- 控制是否全选 -->
+            <!-- 控制是否全选 ，绑定toggleAll事件-->
             <li class="col-1"><span class="checkbox" v-bind:class="{'checked':allChecked}" @click="toggleAll"></span>全选</li>
             <!-- id上不同的数字代表不同的flex:grow值，因为用的是flex布局 -->
             <li class="col-3">商品名称</li>
@@ -132,12 +132,14 @@
       },
       // 控制全选功能
       toggleAll(){
+        // this.allChecked可以用来判断当前是否全选，点击之后取反
         let url = this.allChecked?'/carts/unSelectAll':'/carts/selectAll';
+        // 接口文档里面是put方法
         this.axios.put(url).then((res)=>{
           this.renderData(res);
         })
       },
-      // 公共赋值
+      // 公共赋值，控制全选和非全选也用到里面的内容
       renderData(res){
         this.list = res.cartProductVoList || [];  //获取产品列表
         this.allChecked = res.selectedAll;
