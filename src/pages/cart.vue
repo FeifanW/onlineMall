@@ -10,6 +10,7 @@
         <div class="cart-box">
           <ul class="cart-item-head">
             <!-- span就是那个全选按钮，用列表模拟横向栏 -->
+            <!-- 控制是否全选 -->
             <li class="col-1"><span class="checkbox" v-bind:class="{'checked':allChecked}" @click="toggleAll"></span>全选</li>
             <!-- id上不同的数字代表不同的flex:grow值，因为用的是flex布局 -->
             <li class="col-3">商品名称</li>
@@ -19,12 +20,16 @@
             <li class="col-1">操作</li>
           </ul>
           <ul class="cart-item-list">
+            <!-- 把加购物车的列表显示出来 -->
             <li class="cart-item" v-for="(item,index) in list" v-bind:key="index">
               <div class="item-check">
+                <!-- 购物车每一项是否被选中，可以使用动态绑定，也就是后台返回的productSelected是true的时候就是选中了，添加这个class -->
                 <span class="checkbox" v-bind:class="{'checked':item.productSelected}"  @click="updateCart(item)"></span>
               </div>
               <div class="item-name">
+                <!-- 图片懒加载，v-lazy -->
                 <img v-lazy="item.productMainImage" alt="">
+                <!-- 显示商品的名称和标题 -->
                 <span>{{item.productName + ' , ' + item.productSubtitle}}</span>
               </div>
               <!-- 价格一般不放在前端，有可能会有安全性问题 -->
@@ -32,10 +37,12 @@
               <div class="item-num">
                 <div class="num-box">
                   <a href="javascript:;" @click="updateCart(item,'-')">-</a>
+                  <!-- 选中的商品的数量 -->
                   <span>{{item.quantity}}</span>
                   <a href="javascript:;"  @click="updateCart(item,'+')">+</a>
                 </div>
               </div>
+              <!-- 总价格，是后端计算，不是在前端计算的，保证安全性 -->
               <div class="item-total">{{item.productTotalPrice}}</div>
               <div class="item-del" @click="delProduct(item)"></div>
             </li>
@@ -44,9 +51,11 @@
         <div class="order-wrap clearfix">
           <div class="cart-tip fl">
             <a href="/#/index">继续购物</a>
+            <!-- 一共有多少件商品 -->
             共<span>{{list.length}}</span>件商品，已选择<span>{{checkedNum}}</span>件
           </div>
           <div class="total fr">
+            <!-- 总金额后台计算好了 -->
             合计：<span>{{cartTotalPrice}}</span>元
             <a href="javascript:;" class="btn" @click="order">去结算</a>
           </div>
@@ -82,6 +91,7 @@
     methods:{
       // 获取购物车列表
       getCartList(){     //根据接口文档
+      //接口是get方法，添加是post方法,更新是put方法，删除是delete方法
         this.axios.get('/carts').then((res)=>{
           this.renderData(res);
         })
@@ -112,6 +122,7 @@
           this.renderData(res);
         })
       },
+      //所以的数据都是从后台拉取，而不是在本地计算
       // 删除购物车商品
       delProduct(item){
         this.axios.delete(`/carts/${item.productId}`).then((res)=>{
@@ -128,10 +139,10 @@
       },
       // 公共赋值
       renderData(res){
-        this.list = res.cartProductVoList || [];
+        this.list = res.cartProductVoList || [];  //获取产品列表
         this.allChecked = res.selectedAll;
         this.cartTotalPrice = res.cartTotalPrice;
-        this.checkedNum = this.list.filter(item=>item.productSelected).length;
+        this.checkedNum = this.list.filter(item=>item.productSelected).length;  //一选择的件数需要通过过滤的方式找到，打钩的件数
       },
       // 购物车下单
       order(){

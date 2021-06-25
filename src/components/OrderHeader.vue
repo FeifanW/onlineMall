@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'vuex';  //username是在加载之后，再运行一次计算属性得到的
 export default{
   name:'order-header',
   props:{  //复用组件

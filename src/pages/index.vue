@@ -241,7 +241,8 @@
         // 后台接口文档里面，添加购物车是POST方法,地址是/carts
         this.axios.post('/carts',{  //第一个参数是地址，第二个参数是要传递的参数
           productId: id,
-          selected: true
+          selected: true  //在加入购物车的那一刻，这个商品就已经是选中状态了
+          //所以但凡功能是后端控制，前端认为就会轻松很多
         }).then((res)=>{  //链式调用
           this.showModal = true;
           this.$store.dispatch('saveCartCount',res.cartTotalQuantity);  //派发出去
