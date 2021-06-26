@@ -3,6 +3,8 @@ import router from './router'
 import axios from 'axios'
 import VueLazyLoad from 'vue-lazyload'
 import VueCookie from 'vue-cookie'
+import {Message} from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import store from './store' //index可以省略不写，因为默认是index.js
 import App from './App.vue'  //不加./它会认为是个插件
 //import env from './env'
@@ -31,16 +33,19 @@ axios.interceptors.response.use(function(response) {  //对错误进行处理，
     }
     return Promise.reject(res);
   }else {
-    alert(res.msg); //弹出错误信息
+    //弹出错误信息
+    Message.warning(res.msg)
     return Promise.reject(res); //报错之后不希望进来
   }
 })
 
 // 使用这个插件
 Vue.use(VueCookie);
+//Vue.use(Message); //使用组件
 Vue.use(VueLazyLoad,{  //第二个参数是全局配置
   loading:'/imgs/loading-svg/loading-bars.svg'  //就是加载的时候的动画
 })
+Vue.prototype.$message = Message;  //把这个方法挂载的原型上
 Vue.config.productionTip = false
 
 new Vue({

@@ -38,6 +38,7 @@
 </template>
 <script>
 export default{
+ // import {mapActions} from 'vuex';
   name:'login',
   data() {  //用冒号的话是全局生效
     return {
@@ -55,11 +56,16 @@ export default{
         password
       }).then((res)=>{  //在拦截器里面处理过，所以返回的就是data里面的数据，接口文档在门户_用户接口.md
         //把userId可以先保存在cookie里面，可以安装一下vue-cookie
-        this.$cookie.set('userId',res.id,{expires:'1M'}) //设置有效时间,1个月过期
+        this.$cookie.set('userId',res.id,{expires:'Session'}) //设置有效时间,1个月过期
         //为了刷新后也保存登录人的信息，要用到vuex
         this.$store.dispatch('saveUserName',res.username)  //通过dispatch来派发方法
         //tp-do 保存用户名
-        this.$router.push('/index');  //输入点击之后跳转到首页
+        this.$router.push({
+          name:'index',
+          params:{
+            from:'login'
+          }
+        });  //输入点击之后跳转到首页
       })
     },
     register() {
@@ -68,7 +74,7 @@ export default{
         password:'admin1',
         email:'admin1@163.com'
       }).then(()=>{  //在拦截器里面处理过，所以返回的就是data里面的数据，接口文档在门户_用户接口.md
-        alert('注册成功')
+        this.$message.success('注册成功');
       })
     }
   }

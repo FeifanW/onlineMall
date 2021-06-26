@@ -13,6 +13,8 @@
           <!-- 已经登录的显示名字，没有登录显示登录 -->
           <a href="javascript:;" v-if="username">{{username}}</a> 
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
+          <!-- 添加取消按钮 -->
+          <a href="javascript:;" v-if="username" @click="logout">退出</a> 
           <a href="javascript:;" v-if="username">我的订单</a>
                               <!-- 在下面定义goToCart -->
           <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
@@ -167,6 +169,10 @@ export default{
   },
   mounted() {
     this.getProductList();
+    let params = this.$route.params;
+    if(params && params.from == 'login'){
+      this.getCartCount(); //说明是从登录页面过来的
+    }
   },
   methods:{
     login(){
@@ -182,6 +188,20 @@ export default{
         if(res.list.length >= 6){
           this.phoneList = res.list  //当列表里数据大于6时截取6条数据
         }
+      })
+    },
+    getCartCount() { //获取购物车的数量
+      this.axios.get('/carts/products/sum').then((res=0)=>{
+        // to-do 保存到vuex里面
+        this.$store.dispatch('saveCartCount',res) //只写一个res因为返回的数据里只有一个data
+      })
+    },
+    logout(){  //可以去看一下接口文档
+      this.axios.post('/user/logout').then(()=>{
+        this.$message.success('退出成功');
+        this.$cookie.set('userId','',{expires:'-1'})
+        this.$store.dispatch('saveUserName','')  //vuex把用户名置为空
+        this.$store.dispatch('saveCartCount','0')  //退出的时候购物车置为0
       })
     },
     goToCart(){
