@@ -37,7 +37,7 @@
               <div class="item-price">{{item.productPrice}}</div> 
               <div class="item-num">
                 <div class="num-box">
-                  //更新列表
+                  <!-- //更新列表 -->
                   <a href="javascript:;" @click="updateCart(item,'-')">-</a>
                   <!-- 选中的商品的数量 -->
                   <span>{{item.quantity}}</span>
@@ -58,7 +58,7 @@
             共<span>{{list.length}}</span>件商品，已选择<span>{{checkedNum}}</span>件
           </div>
           <div class="total fr">
-            <!-- 总金额后台计算好了 -->
+            <!-- 总金额后台计算好了,结算在于后台，前端修改无效 -->
             合计：<span>{{cartTotalPrice}}</span>元
             <a href="javascript:;" class="btn" @click="order">去结算</a>
           </div>
@@ -153,10 +153,11 @@
       },
       // 购物车下单
       order(){
+        // 遍历数组里面的每一项
         let isCheck = this.list.every(item=>!item.productSelected);
-        if(isCheck){
+        if(isCheck){ //如果都没有选中的话，返回boolean值，每个都是false的时候就返回true
           this.$message.warning('请选择一件商品');
-        }else{
+        }else{  //如果有选中的，就跳转到结算页面
           this.$router.push('/order/confirm');
         }
       }
