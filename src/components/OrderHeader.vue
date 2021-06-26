@@ -31,6 +31,7 @@ export default{
 <style lang="scss">
   .order-header{
     padding: 30px 0;
+    border-bottom: 2px solid #FF6600;
     .header-logo{
       float: left;  //不能在公共组件里加，需要单独加
     }
@@ -40,15 +41,17 @@ export default{
       line-height: 55px; //垂直居中
     }
     .title{
-      font-size: 28px;
       float:left;
-      color:#333333;
       margin-left: 54px;
+      h2{   //因为优先级的原因，所以在h2里面设置字体和颜色
+        font-size: 28px;
+        color:#333333;
+      }
       span{
         font-size: 14px;
         margin-left: 17px;
         color: #999999;
-        font-weight: bold;
+        font-weight: 200;
       }
     }
     .username{
