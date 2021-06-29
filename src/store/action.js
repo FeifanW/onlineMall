@@ -8,3 +8,12 @@ export default {
     context.commit('saveCartCount',count)
   }
 }
+
+
+
+
+
+
+
+
+
