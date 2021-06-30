@@ -27,6 +27,8 @@
             <h2 class="addr-title">收货地址</h2>
             <div class="addr-list clearfix">
               <!-- 从收货地址接口获取 -->
+              <!-- 当index = checkIndex的时候，添加样式，添加一个橘色的边框 -->
+              <!-- 这里比较难理解 -->
               <div class="addr-info" :class="{'checked':index == checkIndex}" @click="checkIndex=index" v-for="(item,index) in list" :key="index">
                 <!-- 收货人的姓名、手机号、地址-->
                 <h2>{{item.receiverName}}</h2>
@@ -41,6 +43,7 @@
                       <use xlink:href="#icon-del"></use>
                     </svg>
                   </a>
+                  <!-- rf就是编辑按钮 -->
                   <a href="javascript:;" class="fr" @click="editAddressModal(item)">
                     <svg class="icon icon-edit">
                       <use xlink:href="#icon-edit"></use>
@@ -219,8 +222,8 @@ export default{
     },
     // 打开新增地址弹框
     editAddressModal(item){
-      this.userAction = 1;
-      this.checkedItem = item;
+      this.userAction = 1;  // 编辑功能
+      this.checkedItem = item;  //点击编辑按钮之后，需要把信息都填进去
       this.showEditModal = true;
     },
     delAddress(item){  //在上面的子组件Modal里面点击按钮之后会触发这个方法
@@ -272,6 +275,7 @@ export default{
           receiverZip
         }
       }
+      // 调用接口进行提交
       this.axios[method](url,params).then(()=>{  //动态的获取方法进行调用，第一个是url地址，第二个是参数统一传递params里的参数
         this.closeModal();  //成功之后调用这个关闭窗口，恢复状态
         this.getAddressList();  //重新拉取一次，获取结算窗口里面目前有几个商品，更新商品信息
@@ -296,20 +300,22 @@ export default{
         })
       })
     },
-    // 订单提交
+    // 订单提交，点击提交按钮会调用这个方法
     orderSubmit(){
-      let item = this.list[this.checkIndex];
-      if(!item){
-        this.$message.error('请选择一个收货地址');
-        return;
+      let item = this.list[this.checkIndex];  //从订单列表里面找索引的这个值
+      if(!item){   //如果找不到，提示不存在
+        this.$message.error('请选择一个收货地址');  //element ui提示
+        return;  //防止往下走
       }
-      this.axios.post('/orders',{
-        shippingId:item.id
+      //掉一下提交订单的接口
+      this.axios.post('/orders',{ //shippingId就是这次的订单号
+        shippingId:item.id  //收货地址的id
       }).then((res)=>{
-        this.$router.push({
+        this.$router.push({  //获取数据成功之后就要跳转到订单结算里面，通过this.$router.push进行跳转
+         //路由跳转的几种方式，一种是字符串直接跳转，另一种就是push方法
           path:'/order/pay',
-          query:{
-            orderNo:res.orderNo
+          query:{   //query和params是两种传参方式
+            orderNo:res.orderNo  //orderNo最终会传到订单结算页面，把订单号拼接上去
           }
         })
       })
