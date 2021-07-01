@@ -16,15 +16,15 @@
               <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
-              <p>应付总额：<span>{{payment}}</span>元</p>
+              <p>应付总额：<span>10</span>元</p>
               <!-- icon-down就是向下展开功能 -->
-              <!-- 动态绑定一个class,可以实现图标转换 -->
+              <!-- 动态绑定一个class,可以实现图标转换  -->
               <p>订单详情<em class="icon-down" :class="{'up':showDetail}" @click="showDetail=!showDetail"></em></p>
             </div>
           </div>
           <!-- v-if元素隐藏时，会在dom节点中把该元素移出，v-show元素隐藏的时候会在dom节点中把CSS属性设置为display:none，元素依然在dom节点中 -->
           <!-- v-if="showDetail" -->
-          <div class="item-detail" v-if="showDetail">
+          <div class="item-detail">
             <div class="item">
               <div class="detail-title">订单号：</div>
               <div class="detail-info theme-color">{{orderNo}}</div>
@@ -84,7 +84,8 @@ export default{
       orderNo:this.$route.query.orderNo, //这个一进来就可以获取到
       addressInfo:'',  //收货人地址信息
       orderDetail:[],  // 订单详情，包含商品列表
-      showDetail:false  //是否显示订单详情
+      showDetail:false,  //是否显示订单详情
+      payType:'',  //支付类型
     }
   },
   mounted(){
@@ -99,6 +100,11 @@ export default{
       // 添加功能，点击订单详情的时候把数据拉下来进行展示
       this.orderDetail = res.orderItemVoList;  //其实返回的是一个列表
       })
+    },
+    paySubmit(payType){
+      if(payType == 1){  //说明是支付宝支付，我们要跳转到中间页面 ,windos.open可以打开新窗口，a标签也可以打开
+        window.open('/#/order/alipay?orderId='+this.orderNo,'_blank')  //第一个参数是url地址，就是中间件的页面alipay.vue,在新窗口打开
+      }  //得到的form会渲染到页面上去
     }
   },
 }
