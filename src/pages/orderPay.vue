@@ -11,7 +11,7 @@
               <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
-              <p>应付总额：<span>10</span>元</p>
+              <p>应付总额：<span>{{payment}}</span>元</p>
               <!-- icon-down就是向下展开功能 -->
               <!-- 动态绑定一个class,可以实现图标转换  -->
               <p>订单详情<em class="icon-down" :class="{'up':showDetail}" @click="showDetail=!showDetail"></em></p>
@@ -58,7 +58,10 @@
     <!-- 微信弹窗 -->
     <!-- 这个close是子组件自定义事件 -->
     <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
-    <!-- <modal
+    <!-- 判断是否确认支付 ，3的话可以确认也可以取消，showPayModal可以控制什么时候弹窗
+    关闭弹窗的时候，就把当前弹窗页面关闭掉了
+    -->
+    <modal
       title="支付确认"
       btnType="3"
       :showModal="showPayModal"
@@ -70,12 +73,13 @@
       <template v-slot:body>
         <p>您确认是否完成支付？</p>
       </template>
-    </modal> -->
+    </modal>
   </div>
 </template>
 <script>
 import QRcode from 'qrcode'
 import ScanPayCode from './../components/ScanPayCode'
+import Modal from './../components/Modal'
 export default{
   name:'order-pay',
   data() {
@@ -86,11 +90,15 @@ export default{
       showDetail:false,  //是否显示订单详情
       payType:'',  //支付类型
       showPay:false,  //是否显示微信支付弹框
-      payImg:''  //微信支付的二维码
+      payImg:'', //微信支付的二维码
+      showPayModal:false,  //是否显示二次支付确认弹框
+      payment:'',   //总金额
+      T:''  //保存定时器ID状态
     }
   },
   components:{
     ScanPayCode,
+    Modal,
   },
   mounted(){
     this.getOrderDetail();  //调用一下这个接口
@@ -103,6 +111,7 @@ export default{
       this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
       // 添加功能，点击订单详情的时候把数据拉下来进行展示
       this.orderDetail = res.orderItemVoList;  //其实返回的是一个列表
+      this.payment = res.payment; //从接口获取总金额
       })
     },
     paySubmit(payType){
@@ -121,6 +130,7 @@ export default{
           .then(url=>{
             this.showPay = true;
             this.payImg = url;  //把图片保存起来，进行渲染
+            this.loopOrderState();  //二维码出来之后，就开始轮询
           })
           .catch(() => {
             this.$message.error('微信二维码生成失败，请稍后重试')
@@ -131,6 +141,23 @@ export default{
     //关闭微信弹框
     closePayModal(){
       this.showPay = false;
+      this.showPayModal = true;
+      clearInterval(this.T);
+    },
+    //轮询当前订单支付状态
+    loopOrderState(){
+      //查看接口文档可以获取订单状态 20-是已付款
+      this.T = setInterval(()=>{
+        this.axios.get(`/orders/${this.orderId}`).then((res)=>{
+          if(res.status == 20){  //说明用户已经付款
+            clearInterval(this.T);  //如果不清掉会一直轮询下去
+            this.goOrderList();  //帮助用户进行跳转
+          }
+        })
+      },1000)
+    },
+    goOrderList(){
+      this.$router.push('/order/list');  //router和route要区分清楚，router是全局路由器对象，route是当前跳转的路由对象
     }
   },
 }
