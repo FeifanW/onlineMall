@@ -8,6 +8,7 @@
     <div class="wrapper">
       <div class="container">
         <div class="order-box">
+          <!-- 控制什么时候显示什么时候不显示 -->
           <loading v-if="loading"></loading>
           <!-- 从后台获取的数据进行遍历 -->
           <div class="order" v-for="(order,index) in list" :key="index">
@@ -55,7 +56,7 @@
               </div>
             </div>
           </div>
-          <el-pagination
+          <!-- <el-pagination
             v-if="true"
             class="pagination"
             background
@@ -64,8 +65,8 @@
             :total="total"
             @current-change="handleChange"
             >
-          </el-pagination>
-          <div class="load-more" v-if="false">
+          </el-pagination> -->
+          <!-- <div class="load-more" v-if="false">
               <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
           </div>
           <div class="scroll-more"
@@ -75,7 +76,7 @@
             v-if="false"
           >
             <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
-          </div>
+          </div> -->
           <no-data v-if="!loading && list.length==0"></no-data>
         </div>
       </div>
@@ -84,23 +85,31 @@
 </template>
 <script>
 import OrderHeader from './../components/OrderHeader'
+import Loading from './../components/Loading'
+import NoData from './../components/NoData'
 export default{
   name:'orderList',
   data(){
     return {
+      loading:true,
       list:[]
     }
   },
   components:{
-    OrderHeader
+    OrderHeader,
+    Loading,
+    NoData
   },
   mounted(){
-    this.getOrderList();  //初始化这个方法
+    this.getOrderList() //初始化这个方法
   },
   methods: {
     getOrderList(){
       this.axios.get('/orders').then((res)=>{
-        this.list = res.list;
+        this.loading = false;
+        this.list = [] | res.list;  //没有数据的时候显示空
+      }).catch(()=>{
+        this.loading = false;  //报错用catch抓取，一样
       })
     },
     goPay(orderNo){
@@ -116,7 +125,7 @@ export default{
         }
       })
     }
-  },
+  }
 }
 </script>
 <style lang="scss">
