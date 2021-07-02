@@ -142,12 +142,12 @@
               <option value="河北">河北</option>
             </select>
             <select name="city" v-model="checkedItem.receiverCity" >
-              <option value="北京" selected="selected">北京</option>
+              <option value="北京">北京</option>
               <option value="天津">天津</option>
               <option value="河北">石家庄</option>
             </select>
             <select name="district" v-model="checkedItem.receiverDistrict" >
-              <option value="北京" selected="selected">昌平区</option>
+              <option value="北京">昌平区</option>
               <option value="天津">海淀区</option>
               <option value="河北">东城区</option>
               <option value="天津">西城区</option>

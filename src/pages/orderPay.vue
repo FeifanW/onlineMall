@@ -1,10 +1,5 @@
 <template>
   <div class="order-pay">
-    <order-header title="订单支付">
-      <template v-slot:tip>
-        <span>请谨防钓鱼链接或诈骗电话，了解更多</span>
-      </template>
-    </order-header>
     <div class="wrapper">
       <div class="container">
         <div class="order-wrap">
@@ -24,10 +19,10 @@
           </div>
           <!-- v-if元素隐藏时，会在dom节点中把该元素移出，v-show元素隐藏的时候会在dom节点中把CSS属性设置为display:none，元素依然在dom节点中 -->
           <!-- v-if="showDetail" -->
-          <div class="item-detail">
+          <div class="item-detail" v-if="showDetail">
             <div class="item">
               <div class="detail-title">订单号：</div>
-              <div class="detail-info theme-color">{{orderNo}}</div>
+              <div class="detail-info theme-color">{{orderId}}</div>
             </div>
             <div class="item">
               <div class="detail-title">收货信息：</div>
@@ -60,8 +55,10 @@
         </div>
       </div>
     </div>
+    <!-- 微信弹窗 -->
+    <!-- 这个close是子组件自定义事件 -->
     <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
-    <modal
+    <!-- <modal
       title="支付确认"
       btnType="3"
       :showModal="showPayModal"
@@ -73,27 +70,34 @@
       <template v-slot:body>
         <p>您确认是否完成支付？</p>
       </template>
-    </modal>
+    </modal> -->
   </div>
 </template>
 <script>
+import QRcode from 'qrcode'
+import ScanPayCode from './../components/ScanPayCode'
 export default{
   name:'order-pay',
   data() {
     return{
-      orderNo:this.$route.query.orderNo, //这个一进来就可以获取到
+      orderId:this.$route.query.orderNo, //这个一进来就可以获取到
       addressInfo:'',  //收货人地址信息
       orderDetail:[],  // 订单详情，包含商品列表
       showDetail:false,  //是否显示订单详情
       payType:'',  //支付类型
+      showPay:false,  //是否显示微信支付弹框
+      payImg:''  //微信支付的二维码
     }
+  },
+  components:{
+    ScanPayCode,
   },
   mounted(){
     this.getOrderDetail();  //调用一下这个接口
   },
   methods: {  //方法都放在methods里面
     getOrderDetail(){  //通过动态路由的方式传参
-      this.axios.get(`/orders/${this.orderNo}`).then((res)=>{
+      this.axios.get(`/orders/${this.orderId}`).then((res)=>{
       let item = res.shippingVo;  //这个shippingVo就是在门户-订单接口的3 订单详情
       //用模板字面量的话可以加空格
       this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
@@ -103,8 +107,30 @@ export default{
     },
     paySubmit(payType){
       if(payType == 1){  //说明是支付宝支付，我们要跳转到中间页面 ,windos.open可以打开新窗口，a标签也可以打开
-        window.open('/#/order/alipay?orderId='+this.orderNo,'_blank')  //第一个参数是url地址，就是中间件的页面alipay.vue,在新窗口打开
-      }  //得到的form会渲染到页面上去
+        this.payType=1
+        window.open('/#/order/alipay?orderId='+this.orderId,'_blank')  //第一个参数是url地址，就是中间件的页面alipay.vue,在新窗口打开
+      }else{//得到的form会渲染到页面上去
+        this.payType=2
+        this.axios.post('/pay',{  //用微信和支付宝传的参数差不多
+          orderId:this.orderId,
+          orderName:'商城官网练习',
+          amount:0.01,  //单位元
+          payType:2,
+        }).then((res)=>{  //res就是data里面的数组，在main.js里面已经拦截过了
+          QRcode.toDataURL(res.content)
+          .then(url=>{
+            this.showPay = true;
+            this.payImg = url;  //把图片保存起来，进行渲染
+          })
+          .catch(() => {
+            this.$message.error('微信二维码生成失败，请稍后重试')
+          })
+        })  
+      }  
+    },
+    //关闭微信弹框
+    closePayModal(){
+      this.showPay = false;
     }
   },
 }
