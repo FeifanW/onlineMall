@@ -37,7 +37,7 @@ axios.interceptors.response.use(function(response) {  //对错误进行处理，
     Message.warning(res.msg)
     return Promise.reject(res); //报错之后不希望进来
   }
-},(error)=>{
+},(error)=>{  //前面拦截的是正常的系统的业务码，后面的是HTTP请求的错误码
   let res = error.response;
   Message.error(res.data.message);
   return Promise.reject(error);  //抛出一个异常，这样接口就不会进入支付页面的then里面了

@@ -1,5 +1,10 @@
 <template>
   <div class="order-confirm">
+    <order-header title="订单确认">
+      <template v-slot:tip>
+        <span>请认真填写收货地址</span>
+      </template>
+    </order-header>
     <!-- svg比图片小很多，可以作为一种优化方式，在这里定义了-->
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
       <defs>
@@ -185,6 +190,7 @@
   </div>
 </template>
 <script>
+import OrderHeader from './../components/OrderHeader'
 import Modal from './../components/Modal'  //弹窗组件，在首页添加购物车的时候用到过
 export default{
   name:'order-confirm',
@@ -202,7 +208,8 @@ export default{
     }
   },
   components:{
-    Modal
+    Modal,
+    OrderHeader
   },
   mounted(){
     this.getAddressList();  //接口获取收货地址
