@@ -107,7 +107,7 @@ export default{
     getOrderList(){
       this.axios.get('/orders').then((res)=>{
         this.loading = false;
-        this.list = [] | res.list;  //没有数据的时候显示空
+        this.list = res.list;  //没有数据的时候显示空
       }).catch(()=>{
         this.loading = false;  //报错用catch抓取，一样
       })
