@@ -57,6 +57,7 @@
             </div>
           </div>
           <el-pagination
+            v-if="false"
             class="pagination"
             background
             layout="prev, pager, next"
@@ -65,6 +66,9 @@
             @current-change="handleChange"
             >
           </el-pagination>
+          <div class="load-more">
+            <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
+          </div>
           <!-- <div class="load-more" v-if="false">
               <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
           </div>
@@ -77,6 +81,7 @@
             <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
           </div> -->
           <no-data v-if="!loading && list.length==0"></no-data>
+          
         </div>
       </div>
     </div>
@@ -86,12 +91,12 @@
 import OrderHeader from './../components/OrderHeader'
 import Loading from './../components/Loading'
 import NoData from './../components/NoData'
-import { Pagination } from 'element-ui'
+import { Pagination,Button } from 'element-ui'
 export default{
   name:'orderList',
   data(){
     return {
-      loading:true,
+      loading:false,
       list:[],
       pageSize:10,  //上面el-pagination的属性，每一页显示的条数
       pageNum:1,
@@ -102,20 +107,23 @@ export default{
     OrderHeader,
     Loading,
     NoData,
-    [Pagination.name]:Pagination
+    [Pagination.name]:Pagination,
+    [Button.name]:Button  //Button.name就是el-Button
   },
   mounted(){
     this.getOrderList() //初始化这个方法
   },
   methods: {
     getOrderList(){
+      this.loading = true;
       this.axios.get('/orders',{  //post请求的话不需要加params
         params:{
+          pageSize:10,
           pageNum:this.pageNum
         }
       }).then((res)=>{
         this.loading = false;
-        this.list = res.list;  //没有数据的时候显示空
+        this.list = this.list.concat(res.list);  //没有数据的时候显示空，把数组拼接起来
         this.total = res.total; //从接口获得total
       }).catch(()=>{
         this.loading = false;  //报错用catch抓取，一样
@@ -134,9 +142,13 @@ export default{
         }
       })
     },
-    handleChange(pageNum) {
+    handleChange(pageNum) {  //分页器可以获取第几页
       this.pageNum = pageNum;
       this.getOrderList();
+    },
+    loadMore(){
+      this.pageNum++;
+      this.getOrderList();  //翻页之后再次获取一次列表，需要的效果是第二页内容加上去而不是覆盖掉
     }
   }
 }
@@ -208,6 +220,9 @@ export default{
         }
         .el-pagination.is-background .el-pager li:not(.disabled).active{  //分页器的颜色
           background-color: #FF6600;
+        }
+        .load-more{
+          text-align: center;
         }
         .el-button--primary{
           background-color: #FF6600;
