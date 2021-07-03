@@ -11,5 +11,6 @@ module.exports = { //记着加s,不是export而是exports
         }
       }
     }
-  }
+  },
+  productionSourceMap:false
 }
