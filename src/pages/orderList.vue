@@ -66,8 +66,16 @@
             @current-change="handleChange"
             >
           </el-pagination>
-          <div class="load-more">
+          <div class="load-more" v-if="showNextPage">
             <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
+          </div>
+          <div class="scroll-more"
+            v-infinite-scroll = 'scrollMore'
+            infinite-scroll-disabled="busy" 
+            infinite-scroll-distance="410"
+          >
+          <!-- 滚动的时候触发这个方法 scrollMore-->
+            <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
           </div>
           <!-- <div class="load-more" v-if="false">
               <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
@@ -92,15 +100,21 @@ import OrderHeader from './../components/OrderHeader'
 import Loading from './../components/Loading'
 import NoData from './../components/NoData'
 import { Pagination,Button } from 'element-ui'
+import infiniteScroll from 'vue-infinite-scroll'
 export default{
   name:'orderList',
+  directives:{
+    infiniteScroll
+  },  //局部的指令
   data(){
     return {
       loading:false,
       list:[],
       pageSize:10,  //上面el-pagination的属性，每一页显示的条数
       pageNum:1,
-      total:0  //这个total的值从接口来,总条数
+      showNextPage:true, //加载更多，是否显示按钮，按钮的方法
+      total:0,  //这个total的值从接口来,总条数，分页器的变量
+      busy:false,  //滚动加载是否触发
     }
   },
   components:{
@@ -116,6 +130,7 @@ export default{
   methods: {
     getOrderList(){
       this.loading = true;
+      this.busy = true; //一开始禁用，防止一次加载两个页面
       this.axios.get('/orders',{  //post请求的话不需要加params
         params:{
           pageSize:10,
@@ -125,6 +140,8 @@ export default{
         this.loading = false;
         this.list = this.list.concat(res.list);  //没有数据的时候显示空，把数组拼接起来
         this.total = res.total; //从接口获得total
+        this.showNextPage = res.hasNextPage;
+        this.busy = false;  //请求回来之后，再释放开
       }).catch(()=>{
         this.loading = false;  //报错用catch抓取，一样
       })
@@ -142,14 +159,42 @@ export default{
         }
       })
     },
+    // 第一种方法分页器
     handleChange(pageNum) {  //分页器可以获取第几页
       this.pageNum = pageNum;
       this.getOrderList();
     },
+    // 第二种方法 加载更多按钮
     loadMore(){
       this.pageNum++;
       this.getOrderList();  //翻页之后再次获取一次列表，需要的效果是第二页内容加上去而不是覆盖掉
-    }
+    },
+    // 第三种方法 滚动加载，通过npm插件
+    scrollMore(){
+      this.busy = true;
+      setTimeout(()=>{
+        this.pageNum++;
+        this.getList();
+      },500)
+    },
+    //专门给scrollMore使用
+    getList(){
+      this.loading = true; //滚动开始之前为true
+      this.axios.get('/orders',{  //post请求的话不需要加params
+        params:{
+          pageSize:10,
+          pageNum:this.pageNum
+        }
+      }).then((res)=>{
+        this.list = this.list.concat(res.list);  //没有数据的时候显示空，把数组拼接起来
+        this.loading = false;  //请求结束之后为false
+        if(res.hasNextPage){  //判断是否还有下一页
+          this.busy = false
+        }else{
+          this.busy = true
+        }
+      })
+    },
   }
 }
 </script>
@@ -228,7 +273,7 @@ export default{
           background-color: #FF6600;
           border-color: #FF6600;
         }
-        .load-more,.scroll-more{
+        .load-more,.scroll-more{  //居中
           text-align:center;
         }
       }
