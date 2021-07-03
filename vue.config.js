@@ -12,5 +12,8 @@ module.exports = { //记着加s,不是export而是exports
       }
     }
   },
-  productionSourceMap:false
+  productionSourceMap:false,
+  chainWebpack:(config)=>{
+    config.plugins.delete('prefetch');  //这样可以把预加载的link全部干掉
+  }
 }
