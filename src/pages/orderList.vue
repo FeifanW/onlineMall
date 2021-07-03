@@ -56,8 +56,7 @@
               </div>
             </div>
           </div>
-          <!-- <el-pagination
-            v-if="true"
+          <el-pagination
             class="pagination"
             background
             layout="prev, pager, next"
@@ -65,7 +64,7 @@
             :total="total"
             @current-change="handleChange"
             >
-          </el-pagination> -->
+          </el-pagination>
           <!-- <div class="load-more" v-if="false">
               <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
           </div>
@@ -87,27 +86,37 @@
 import OrderHeader from './../components/OrderHeader'
 import Loading from './../components/Loading'
 import NoData from './../components/NoData'
+import { Pagination } from 'element-ui'
 export default{
   name:'orderList',
   data(){
     return {
       loading:true,
-      list:[]
+      list:[],
+      pageSize:10,  //上面el-pagination的属性，每一页显示的条数
+      pageNum:1,
+      total:0  //这个total的值从接口来,总条数
     }
   },
   components:{
     OrderHeader,
     Loading,
-    NoData
+    NoData,
+    [Pagination.name]:Pagination
   },
   mounted(){
     this.getOrderList() //初始化这个方法
   },
   methods: {
     getOrderList(){
-      this.axios.get('/orders').then((res)=>{
+      this.axios.get('/orders',{  //post请求的话不需要加params
+        params:{
+          pageNum:this.pageNum
+        }
+      }).then((res)=>{
         this.loading = false;
         this.list = res.list;  //没有数据的时候显示空
+        this.total = res.total; //从接口获得total
       }).catch(()=>{
         this.loading = false;  //报错用catch抓取，一样
       })
@@ -124,6 +133,10 @@ export default{
           orderNo
         }
       })
+    },
+    handleChange(pageNum) {
+      this.pageNum = pageNum;
+      this.getOrderList();
     }
   }
 }
@@ -193,7 +206,7 @@ export default{
         .pagination{
           text-align:right;
         }
-        .el-pagination.is-background .el-pager li:not(.disabled).active{
+        .el-pagination.is-background .el-pager li:not(.disabled).active{  //分页器的颜色
           background-color: #FF6600;
         }
         .el-button--primary{
